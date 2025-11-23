@@ -1,113 +1,146 @@
-README - Secure Steganography and Blockchain Verification System
-=============================================================
+README – Secure Telehealth Data Transmission (AES + DCT + LSB + Blockchain)
 
-This project combines three main security modules to provide an end-to-end secure telehealth data transmission pipeline:
-1. AES Encryption (AES1.py)
-2. DCT-Based Steganography (DCT.py)
-3. Blockchain-Style Hash Verification (Blockchain.py)
+==========================================================
 
--------------------------------------------------------------
-MODULE 1: AES ENCRYPTION (AES1.py)
--------------------------------------------------------------
+This project presents a complete & secure pipeline for medical data transmission using a combination of:
+
+Security Layer	Technique Used
+Encryption	AES-256 (CBC Mode)
+Steganography – Method 1	DCT-based
+Steganography – Method 2	LSB-based (New) 
+
+LSB1
+
+
+Integrity Verification	Blockchain-style SHA-256 hash
+Quality Evaluation	PSNR, SSIM, BER (New) 
+
+Evalution1
+
+
+Pixel Used Detection	Hidden Pixel Visualization (New) 
+
+Change1
+
+🔐 MODULE 1: AES ENCRYPTION – AES1.py
 Purpose:
-- AES1.py is used to ENCRYPT and DECRYPT confidential data (e.g., patient health records, reports, or sensitive metadata).
-- It ensures that even if intercepted, the data remains unreadable.
 
-How it works:
-1. Input a file (e.g., "patient_data.txt") and choose a password.
-2. The program uses AES-256 encryption in CBC mode to produce an encrypted file (*.enc).
-3. The same password is required to decrypt it back into readable form.
+Encrypt and decrypt confidential health data (e.g. medical reports, patient history).
 
-Example workflow:
-- Encrypt:  AES1.py → patient_data.txt → patient_data.txt.enc
-- Decrypt:  AES1.py → patient_data.txt.enc → patient_data_decrypted.txt
+Workflow:
+Step	Input	Output
+Encrypt	patient_data.txt	patient_data.enc
+Decrypt	patient_data.enc	patient_data_decrypted.txt
+Highlights:
 
--------------------------------------------------------------
-MODULE 2: DCT STEGANOGRAPHY (DCT.py)
--------------------------------------------------------------
+AES-256 CBC Mode
+
+Password Protected
+
+Secure Against Eavesdropping
+
+🧠 MODULE 2A: DCT-BASED STEGANOGRAPHY – DCT.py
 Purpose:
-- Embeds the AES-encrypted data into a cover image using the Discrete Cosine Transform (DCT).
-- This hides the existence of the data itself within an image (cover image → stego image).
 
-How it works:
-1. Takes a cover image (e.g., "cover.png") and secret text or encrypted data.
-2. Uses DCT-based frequency-domain embedding to hide the message inside the Y-channel of the image.
-3. Produces a stego image (e.g., "stego.png") that visually looks identical to the cover image.
-4. Allows extraction and quality analysis using metrics such as PSNR, SSIM, and BER.
+Hide AES-encrypted file inside frequency domain (Y-channel of image).
 
-Integration with AES:
-- Before embedding, encrypt your message or data using AES1.py.
-- Then use DCT.py to embed the encrypted output into the image.
-- Example:
-  1. Run AES1.py → "patient_data.txt" → "patient_data.txt.enc"
-  2. Run DCT.py → Embed "patient_data.txt.enc" into "cover.png" → "stego.png"
+Flow:
+AES1.py  → Encrypt Data  
+DCT.py   → Embed into Image (cover.png → stego.png)
 
--------------------------------------------------------------
-MODULE 3: BLOCKCHAIN VERIFICATION (Blockchain.py)
--------------------------------------------------------------
+Also Supports:
+
+✔ Extraction
+✔ PSNR / SSIM / BER evaluation
+✔ Security + invisibility
+
+🧬 MODULE 2B (NEW): LSB-BASED STEGANOGRAPHY – LSB1.py
+
+LSB1
+
+Simple & fast 1-bit LSB File-based steganography
+
+Features:
+
+Fully supports text file embedding/extraction
+
+Stores length in 32-bit header
+
+Lossless output (.png / .bmp / .tiff)
+
+Handles UTF-8 file contents
+
+Menu Flow:
+1. Embed text file → image
+2. Extract text file from stego image
+
+🧾 MODULE 3: BLOCKCHAIN HASH VERIFICATION – Blockchain.py
 Purpose:
-- Ensures integrity and authenticity of the transmitted image using SHA-256 hashing.
-- Simulates blockchain verification principles for image authenticity.
 
-How it works:
-1. The sender generates a hash of the stego image (stego.png).
-   → Saves it in a "image_hash.txt" file.
-2. The receiver uses the same tool to compute the hash of the received stego image.
-3. If both hashes match, the image is verified as authentic and untampered.
+Ensure image authenticity (NO tampering during transmission).
 
-Integration with DCT:
-- After embedding the encrypted data using DCT.py, run Blockchain.py to generate a hash of the stego image.
-- The receiver uses Blockchain.py to verify that the received stego image has not been altered.
+Process:
+Task	Output
+Generate Hash	image_hash.txt
+Verify Hash	MATCH / MISMATCH
 
--------------------------------------------------------------
-FULL PIPELINE OVERVIEW
--------------------------------------------------------------
-Below is the step-by-step integration process showing how all modules work together:
+Uses SHA-256 (Blockchain principle)
+Useful for telehealth authentication & legal validation.
 
-1️⃣ **Encryption**
-   - Use AES1.py to encrypt your sensitive data.
-   - Output: Encrypted file (.enc)
+🧪 (NEW) MODULE 4: EVALUATION SYSTEM – Evalution1.py
 
-2️⃣ **Data Hiding**
-   - Use DCT.py to embed the encrypted data into an image.
-   - Output: Stego image (stego.png)
+Evalution1
 
-3️⃣ **Integrity Hash Generation**
-   - Use Blockchain.py (Option 1) to generate a SHA-256 hash of stego.png.
-   - Output: image_hash.txt
+Supported Metrics:
+Metric	Purpose
+PSNR	Image quality (higher = better)
+SSIM	Structural similarity
+BER	Extraction error rate (lower = better)
+Menu Options:
+1. PSNR + SSIM   → Compare cover.png & stego.png  
+2. BER           → Compare original.txt & extracted.txt
 
-4️⃣ **Transmission**
-   - Send the stego image (stego.png) and hash (image_hash.txt) to the receiver.
 
-5️⃣ **Verification**
-   - Receiver uses Blockchain.py (Option 2) to verify the integrity of stego.png.
-   - If verified, use DCT.py to extract the embedded message.
-   - Finally, decrypt it with AES1.py using the shared password.
+Supports old & new skimage versions → Highly compatible!
 
--------------------------------------------------------------
-EVALUATION METRICS
--------------------------------------------------------------
-- PSNR (Peak Signal-to-Noise Ratio): Measures image quality (higher is better).
-- SSIM (Structural Similarity Index): Measures similarity between cover and stego image.
-- BER (Bit Error Rate): Measures extraction accuracy (lower is better).
+🔍 (NEW) MODULE 5: LSB HIDDEN PIXEL ANALYZER – Change1.py
 
--------------------------------------------------------------
-DEPENDENCIES
--------------------------------------------------------------
-Ensure the following Python packages are installed:
+Change1
 
-pip install numpy opencv-python matplotlib scipy scikit-image pycryptodome
+Shows exact pixels used for data hiding!
+Outputs a visual red heatmap of modified pixels.
 
--------------------------------------------------------------
-PROJECT STRUCTURE
--------------------------------------------------------------
-├── AES1.py              # AES encryption & decryption utility
-├── DCT.py               # DCT-based steganography system
-├── Blockchain.py        # Hash verification system (blockchain principle)
-├── README.txt           # Documentation file
+Feature	Benefit
+Visual proof of embedding	Good for research papers 📑
+Pixel count & message size	Good for security analysis
+Safe for publication	No data leak
+📌 FULL PIPELINE (UPDATED)
+1️⃣ AES1.py       → Encrypt          → data.enc
+2️⃣ DCT.py OR LSB1.py  → Embed into cover image → stego.png
+3️⃣ Blockchain.py → Generate image_hash.txt
+4️⃣ Send stego.png + image_hash.txt
+5️⃣ Verification:
+     ✔ Validate hash
+     ✔ Extract message
+     ✔ Decrypt via AES1.py
+6️⃣ Evalution1.py → Calculate PSNR / SSIM / BER
+7️⃣ (Optional) Change1.py → Visualize used pixels
 
--------------------------------------------------------------
-AUTHOR
--------------------------------------------------------------
-Developed for secure telehealth data transmission research.
-Combines cryptography, steganography, and blockchain verification principles.
+📦 PROJECT STRUCTURE (UPDATED)
+├── AES1.py              # AES-256 Encryption/Decryption
+├── DCT.py               # Frequency-Domain Steganography
+├── LSB1.py              # NEW 1-bit LSB Steganography :contentReference[oaicite:9]{index=9}
+├── Change1.py           # NEW Pixel Usage Visualizer  :contentReference[oaicite:10]{index=10}
+├── Evalution1.py        # NEW Metrics: PSNR, SSIM, BER  :contentReference[oaicite:11]{index=11}
+├── Blockchain.py        # SHA-256 Integrity Verification
+├── README.txt           # Documentation
+
+📦 DEPENDENCIES
+pip install numpy opencv-python matplotlib scipy scikit-image pycryptodome pillow
+
+👨‍⚕️ AUTHOR
+
+Developed for Secure Telehealth Data Transmission and Research
+Combining Cryptography, Steganography & Blockchain Security.
+Author Name: Dip Patra
+College: NIT Agartala
